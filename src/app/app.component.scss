@@ -1,0 +1,36 @@
+.height {
+    height: 100%;
+}
+
+.logo {
+    color: #e93b94;
+}
+
+footer {
+   position: fixed;
+   left: 0;
+   bottom: 0;
+   width: 100%;
+   padding: 8px 0; 
+   color: #000;
+   text-align: center;
+   background: #fff;
+   border-bottom: 1px solid #70b8b8;
+}
+
+.main-container {
+    height: -moz-calc(100% - 150px);
+    height: -webkit-calc(100% - 150px);
+    height: calc(100% - 150px);
+    display:block;
+}
+
+html, body {
+    @extend .height;
+}
+
+.login-txt {
+    font-size: 1rem;
+    padding-right: 10px;
+    padding-left: 10px;
+}

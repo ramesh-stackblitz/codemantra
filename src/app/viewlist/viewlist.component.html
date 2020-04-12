@@ -1,0 +1,231 @@
+<ng-container>
+    <div class="row">
+      <div class="col-sm-6">
+        <div class="mb-2">All project > <b>File Respository</b></div>
+        <button type="button" class="btn btn-primary green">
+          All files <span class="badge badge-light">24</span>
+        </button>
+      </div>
+      <div class="col-sm-6">
+        <div class="float-right">
+          <button type="button" class="btn btn-outline-primary mr-1">Project info</button>
+          <button type="button" class="btn btn-outline-primary">My Team</button>
+        </div> 
+      </div>
+      <div class="col-sm-12">
+      <div class="mt-3">
+        <ul class="nav nav-tabs">
+          <li class="nav-item">
+            <a class="nav-link active" data-toggle="tab" href="#source">Source <span><b class="success">24</b></span></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#altText">Alt Text <span><b>03</b>/07</span></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#process">Process <span><b>05</b>/07</span></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#qa">QA <span><b>04</b>/08</span></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#remediated">Remediated File <span><b>05</b>/07</span></a>
+          </li>
+        </ul>
+        <div class="tab-content">
+          <div id="source" class="tab-pane active">
+              <div class="row">
+                  <div class="col-sm-6 drop-file bg-white">
+                      <ngx-file-drop dropZoneLabel="Drop files here" (onFileDrop)="dropped($event)" 
+                      (onFileOver)="fileOver($event)" (onFileLeave)="fileLeave($event)">
+                          <ng-template ngx-file-drop-content-tmp let-openFileSelector="openFileSelector">
+                            Optional custom content that replaces the the entire default content.
+                            <button type="button" (click)="openFileSelector()">Browse Files</button>
+                          </ng-template>
+                      </ngx-file-drop>
+                  </div>
+                  <div class="col-sm-6 bg-white">
+                    <ul class="icon-container">
+                      <li><a class="list-Dropbox"></a><span>Dropbox</span></li>
+                      <li><a class="list-googledrive"></a><span>Google Drive</span></li>
+                      <li><a class="list-sharepoint"></a><span>Sharepoint</span></li>
+                      <li><a class="list-aws"></a><span>AWS</span></li>
+                    </ul>
+                  </div>
+              </div>
+          </div>
+          <div id="altText" class="tab-pane">
+            <div class="row">
+              <div class="col-sm-12 drop-file bg-white h-200">
+                Alt Text
+              </div>
+            </div>
+          </div>
+          <div id="process" class="tab-pane">
+            <div class="row">
+              <div class="col-sm-12 drop-file bg-white h-200">
+                Process
+              </div>
+            </div>
+          </div>
+          <div id="qa" class="tab-pane">
+            <div class="row">
+              <div class="col-sm-12 drop-file bg-white h-200">
+                QA
+              </div>
+            </div>
+          </div>
+          <div id="remediated" class="tab-pane">
+            <div class="row">
+              <div class="col-sm-12 drop-file bg-white h-200">
+                Remediated File
+              </div>
+            </div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row mt-3 mb-3">
+    <div class="col-sm-3">
+      <div (change)="updateResults()" (keyup)="updateResults()">
+          <div class="active-cyan-4 m-2">
+            <input class="form-control" type="text" placeholder="Search" aria-label="Search" [(ngModel)]="search">
+          </div>
+        </div>
+    </div>
+    <div class="col-sm-5 d-flex align-items-center pl-0 filter-icons">
+      <span><i class="fa fa-filter" aria-hidden="true"></i></span>
+      <span><i class="fa fa-th-list" aria-hidden="true" (click)="onGridLoad('listview')"></i></span>
+      <span><i class="fa fa-th-large" aria-hidden="true" (click)="onGridLoad('gridview')"></i></span>
+    </div>
+    <div class="col-sm-4 d-flex justify-content-end align-items-center">
+        Displaying 1-7 of 24 Files
+    </div>
+  </div>
+  <div class="row bg-white mx-2 py-4 mb-4" *ngIf="showUpload">
+      <div class="col-sm-3">{{uploadFileName}}</div>
+      <div class="col-sm-7">
+        <div class="progress-bar">
+          <span class="progress-value"
+                [ngClass]="uploadFlag ? 'green' : ''"></span>
+        </div>
+      </div>
+      <div class="col-sm-2 closebar d-flex justify-content-end align-items-center"><i class="fa fa-times" aria-hidden="true" (click)="closeProgress()"></i></div>
+  </div>
+  <section class="cards listView" *ngIf="gridListViewShow">
+    <div class="card" *ngFor="let viewlist of viewlist | tableFilter : search, index as i">
+      <div class="card-body">
+        <div class="d-flex flex-row">
+          <div class="d-flex align-items-center listView-icons">
+            <i *ngIf="viewlist.flagDocx" class="fa fa-file-word-o" aria-hidden="true"></i>
+            <i *ngIf="viewlist.flagXlsx" class="fa fa-file-excel-o" aria-hidden="true"></i>
+            <i *ngIf="viewlist.flagPdf" class="fa fa-file-pdf-o" aria-hidden="true"></i>
+          </div>
+          <div class="w-100">
+            <div class="d-flex justify-content-between mb-2 doc-type">
+                <h5>{{viewlist.titleName}}</h5>
+                <i class="fa fa-trash" aria-hidden="true"  (click)="removeGridList(i)"></i>
+              </div>
+              <div class="d-flex flex-row flex-wrap">
+                  <div class="active-grid d-flex grid-content">
+                    <span class="active-grid" 
+                          [ngClass]="[viewlist.sourceFlag ? 'data-complete' : '',  viewlist.sourceInprogress ? 'data-inprogress' : '']"></span>
+                    <span class="d-flex align-items-center source-date">{{viewlist.source}}<br/>{{viewlist.sourceDate}}</span>
+                    <span class="d-flex align-items-center"><i class="fa fa-eye" aria-hidden="true"></i></span>
+                    <span class="d-flex align-items-center"><i class="fa fa-cloud-download" aria-hidden="true"></i></span>
+                    <span class="d-flex align-items-center"><i class="fa fa-download" aria-hidden="true"></i></span>
+                    <span class="d-flex align-items-center"><i class="fa fa-file-text-o" aria-hidden="true"></i></span>
+                  </div>
+                  <div class="active-grid d-flex grid-content">
+                    <span class="active-grid"
+                          [ngClass]="[viewlist.altTextFlag ? 'data-complete' : '',  viewlist.altTextInprogress ? 'data-inprogress' : '']"></span>
+                    <span class="d-flex align-items-center source-date">{{viewlist.altText}}<br/>{{viewlist.altTextDate}}</span>
+                    <span class="d-flex align-items-center"><i class="fa fa-eye" aria-hidden="true"></i></span>
+                    <span class="d-flex align-items-center"><i class="fa fa-file-text-o" aria-hidden="true"></i></span>
+                  </div>
+                  <div class="active-grid d-flex grid-content">
+                      <span class="active-grid"
+                            [ngClass]="[viewlist.processFlag ? 'data-complete' : '',  viewlist.processInprogress ? 'data-inprogress' : '']"></span>
+                    <span class="d-flex align-items-center source-date">{{viewlist.process}}<br/>{{viewlist.processDate}}</span>
+                    <span class="d-flex align-items-center"><i class="fa fa-download" aria-hidden="true"></i></span>
+                    <span class="d-flex align-items-center"><i class="fa fa-file-text-o" aria-hidden="true"></i></span>
+                  </div>
+                  <div class="active-grid d-flex grid-content">
+                      <span class="active-grid"
+                            [ngClass]="[viewlist.qaFlag ? 'data-complete' : '',  viewlist.qaInprogress ? 'data-inprogress' : '']"></span>
+                    <span class="d-flex align-items-center source-date">{{viewlist.qa}}<br/>{{viewlist.qaDate}}</span>
+                    <span class="d-flex align-items-center"><i class="fa fa-download" aria-hidden="true"></i></span>
+                    <span class="d-flex align-items-center"><i class="fa fa-file-text-o" aria-hidden="true"></i></span>
+                    <span class="d-flex align-items-center"><i class="fa fa-eye" aria-hidden="true"></i></span>
+                  </div>
+                  <div class="active-grid d-flex grid-content">
+                      <span class="active-grid"
+                            [ngClass]="[viewlist.remediatedFileFlag ? 'data-complete' : '',  viewlist.remediatedFileInprogress ? 'data-inprogress' : '']"></span>
+                    <span class="d-flex align-items-center source-date">{{viewlist.remediatedFile}}<br/>{{viewlist.remediatedFileDate}}</span>
+                    <span class="d-flex align-items-center"><i class="fa fa-cloud-download" aria-hidden="true"></i></span>
+                    <span class="d-flex align-items-center"><i class="fa fa-file-text-o" aria-hidden="true"></i></span>
+                  </div>
+                </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="cards mt-5" *ngIf="gridViewshow">
+    <div class="card" *ngFor="let viewlist of viewlist | tableFilter : search, index as i">
+      <div class="card-body">
+        <div class="d-flex justify-content-between mb-4 doc-type">
+          <i *ngIf="viewlist.flagDocx" class="fa fa-file-word-o" aria-hidden="true"></i>
+          <i *ngIf="viewlist.flagXlsx" class="fa fa-file-excel-o" aria-hidden="true"></i>
+          <i *ngIf="viewlist.flagPdf" class="fa fa-file-pdf-o" aria-hidden="true"></i>
+          <i class="fa fa-trash" aria-hidden="true" (click)="removeGridList(i)"></i>
+        </div>
+      <h5>{{viewlist.titleName}}</h5>
+        <div class="d-flex">
+            <div class="d-flex flex-column active-grid-icons">
+              <div class="active-grid" 
+                   [ngClass]="[viewlist.sourceFlag ? 'data-complete' : '',  viewlist.sourceInprogress ? 'data-inprogress' : '']"></div>
+              <div class="active-grid"
+                   [ngClass]="[viewlist.altTextFlag ? 'data-complete' : '',  viewlist.altTextInprogress ? 'data-inprogress' : '']"></div>
+              <div class="active-grid"
+                   [ngClass]="[viewlist.processFlag ? 'data-complete' : '',  viewlist.processInprogress ? 'data-inprogress' : '']"></div>
+              <div class="active-grid"
+                   [ngClass]="[viewlist.qaFlag ? 'data-complete' : '',  viewlist.qaInprogress ? 'data-inprogress' : '']"></div>
+              <div class="active-grid"
+                   [ngClass]="[viewlist.remediatedFileFlag ? 'data-complete' : '',  viewlist.remediatedFileInprogress ? 'data-inprogress' : '']"></div>
+              </div>
+              <div class="d-flex flex-column">
+                <div class="active-grid d-flex grid-content">
+                  <span class="d-flex align-items-center source-date">{{viewlist.source}}<br/>{{viewlist.sourceDate | date: 'dd/MM/yyyy'}}</span>
+                  <span class="d-flex align-items-center"><i class="fa fa-eye" aria-hidden="true"></i></span>
+                  <span class="d-flex align-items-center"><i class="fa fa-cloud-download" aria-hidden="true"></i></span>
+                  <span class="d-flex align-items-center"><i class="fa fa-download" aria-hidden="true"></i></span>
+                  <span class="d-flex align-items-center"><i class="fa fa-file-text-o" aria-hidden="true"></i></span>
+                </div>
+                <div class="active-grid d-flex grid-content">
+                  <span class="d-flex align-items-center source-date">{{viewlist.altText}}<br/>{{viewlist.altTextDate}}</span>
+                  <span class="d-flex align-items-center"><i class="fa fa-eye" aria-hidden="true"></i></span>
+                  <span class="d-flex align-items-center"><i class="fa fa-file-text-o" aria-hidden="true"></i></span>
+                </div>
+                <div class="active-grid d-flex grid-content">
+                  <span class="d-flex align-items-center source-date">{{viewlist.process}}<br/>{{viewlist.processDate}}</span>
+                  <span class="d-flex align-items-center"><i class="fa fa-download" aria-hidden="true"></i></span>
+                  <span class="d-flex align-items-center"><i class="fa fa-file-text-o" aria-hidden="true"></i></span>
+                </div>
+                <div class="active-grid d-flex grid-content">
+                  <span class="d-flex align-items-center source-date">{{viewlist.qa}}<br/>{{viewlist.qaDate}}</span>
+                  <span class="d-flex align-items-center"><i class="fa fa-download" aria-hidden="true"></i></span>
+                  <span class="d-flex align-items-center"><i class="fa fa-file-text-o" aria-hidden="true"></i></span>
+                  <span class="d-flex align-items-center"><i class="fa fa-eye" aria-hidden="true"></i></span>
+                </div>
+                <div class="active-grid d-flex grid-content">
+                  <span class="d-flex align-items-center source-date">{{viewlist.remediatedFile}}<br/>{{viewlist.remediatedFileDate}}</span>
+                  <span class="d-flex align-items-center"><i class="fa fa-cloud-download" aria-hidden="true"></i></span>
+                  <span class="d-flex align-items-center"><i class="fa fa-file-text-o" aria-hidden="true"></i></span>
+                </div>
+              </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</ng-container>
+
